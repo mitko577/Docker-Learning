@@ -1,0 +1,31 @@
+version: "3"
+services:
+    myadmin:
+        image: phpmyadmin/phpmyadmin
+        container_name: phpmyadmin
+        ports:
+            - "8080:80"
+        environment:
+            - PMA_ARBITRARY=0
+            - PMA_HOST=${MYSQL_HOST}
+        restart: always
+        depends_on:
+            - mysqldb
+    mysqldb:
+        image: mysql
+        restart: always
+        env_file:
+            - ".env"
+        container_name: ${MYSQL_HOST}
+        environment:
+            - MYSQL_DATABASE=${MYSQL_DATABASE}
+            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+            - MYSQL_USER=${MYSQL_USER}
+            - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+        ports:
+            - "3306:3306" 
+        volumes:
+          - db-data:/var/lib/mysql
+volumes:
+  db-data:
+    driver: local
